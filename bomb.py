@@ -137,22 +137,23 @@ def buttonMod():
         elif ind == "car":
             car = 1
     if color=="b" and text == "abort":
-        print("Hold and release with number in any position\nBlue=4\nWhite=1\nYellow=5\nOther=1")
+        print("Hold and release with number in any position\nBlue=4\nWhite=1\nYellow=5\nOther=1\n")
     elif battery >1 and text == "detonate":
         print("Press and immediate release")
     elif color == "w" and car == 1:
-        print("Hold and release with number in any position\nBlue=4\nWhite=1\nYellow=5\nOther=1")
+        print("Hold and release with number in any position\nBlue=4\nWhite=1\nYellow=5\nOther=1\n")
     elif battery>2 and frk == 1:
         print("Press and immediate release")
     elif color == "y":
-        print("Hold and release with number in any position\nBlue=4\nWhite=1\nYellow=5\nOther=1")
+        print("Hold and release with number in any position\nBlue=4\nWhite=1\nYellow=5\nOther=1\n")
     elif color == "r" and text == "hold":
         print("Press and immediate release")
     else:
-        print("Hold and release with number in any position\nBlue=4\nWhite=1\nYellow=5\nOther=1")
+        print("Hold and release with number in any position\nBlue=4\nWhite=1\nYellow=5\nOther=1\n")
     choose()
 
-def serialValid(serial):
+def serialValid():
+    global serial
     while len(serial) is not 6:
         if len(serial) < 6:
             serial = input("Error, serial is too short:\n")
@@ -161,7 +162,8 @@ def serialValid(serial):
     while not serial[5].isdigit():
         serial = input("Error, serial must end in a number:\n")
 
-def batteryValid(battery):
+def batteryValid():
+    global battery
     valid = 0
     while not valid:
         try:
@@ -172,6 +174,23 @@ def batteryValid(battery):
                 battery = input("Error, number must be positive:\n")
         except ValueError:
             battery = input("Error, number must be an integer:\n")
+
+def indicatorValid():
+    global indicators
+    valid = 0
+    if len(indicators) == 0:
+        valid = 1
+    while not valid:
+        for led in indicators:
+            if len(led) != 3:
+                valid = 0
+                indicators = input("Error, input valid indicators:\n")
+                indicators = indicators.split()
+                break
+            else:
+                valid = 1
+
+        
 
 def wireMod():
     num = input("Number of wires?\n")
@@ -226,9 +245,10 @@ def choose():
     module(choice)
 
 serial = input("Enter the serial number:\n")
-serialValid(serial)
+serialValid()
 battery = input("Enter number of batteries:\n")
-batteryValid(battery)
+batteryValid()
 ind= input("Please enter all LIT indicators:\n")
 indicators = ind.split()
+indicatorValid()
 choose()

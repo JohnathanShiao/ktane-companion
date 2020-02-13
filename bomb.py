@@ -112,15 +112,16 @@ def wire6(colors):
     else:
         print("fourth")
 
-def button(color, text):
-    text = text.lower()
-    color = color.lower()
+def buttonMod():
+    color = input("Color of button? (Input first letter of color):")
     col = re.compile("[rRwWyYbB]")
     val = re.match(col,color)
     while not val:
         color = input("Error, enter a valid color:\n")
         color = color.lower()
         val = re.match(col,color)
+    text = input("Text on button?:")
+    
     frk = 0
     car = 0
     for ind in list(indicators):
@@ -205,6 +206,8 @@ def wireMod():
 def module(num):
     if num is 1:
         wireMod()
+    elif num is 2:
+        buttonMod()
     elif num is 0:
         print("Complete")
         return

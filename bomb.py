@@ -120,7 +120,7 @@ def button(color, text):
     while not val:
         color = input("Error, enter a valid color:\n")
         color = color.lower()
-        val = re.match(col,color)
+        val = re.match(col,color) 
     frk = 0
     car = 0
     for ind in list(indicators):

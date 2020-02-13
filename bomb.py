@@ -113,15 +113,22 @@ def wire6(colors):
         print("fourth")
 
 def buttonMod():
-    color = input("Color of button? (Input first letter of color):")
+    color = input("Color of button? (Input first letter of color):\n")
     col = re.compile("[rRwWyYbB]")
     val = re.match(col,color)
     while not val:
         color = input("Error, enter a valid color:\n")
         color = color.lower()
         val = re.match(col,color)
-    text = input("Text on button?:")
-    
+    text = input("Text on button?:\n")
+    text = text.lower()
+    v = 0
+    while v != 1:
+        if text == "detonate" or text == "abort" or text == "press" or text == "hold":
+            v = 1
+        else:
+            text = input("Error, input a valid word:\n")
+            text = text.lower()
     frk = 0
     car = 0
     for ind in list(indicators):
@@ -143,6 +150,7 @@ def buttonMod():
         print("Press and immediate release")
     else:
         print("Hold and release with number in any position\nBlue=4\nWhite=1\nYellow=5\nOther=1")
+    choose()
 
 def serialValid(serial):
     while len(serial) is not 6:

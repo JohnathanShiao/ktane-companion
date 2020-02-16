@@ -190,7 +190,21 @@ def indicatorValid():
             else:
                 valid = 1
 
-        
+def checkVowel():
+    vowel = re.compile("[aAeEiIoOuU]")
+    for c in serial:
+        found = re.match(vowel,c)
+        if found:
+            return 1
+    return 0     
+
+def simonValid(sequence):
+    color = re.compile("[rygb]")
+    for c in sequence:
+        valid = re.match(color,c)
+        if not valid:
+            return 0
+    return 1
 
 def wireMod():
     num = input("Number of wires?\n")
@@ -230,17 +244,107 @@ def wireMod():
         print("Something went wrong, try again")
     choose()
 
+def simonMod():
+    while True:
+        color = input("What is the flashing pattern? (first letter, seperated by a space):\n")
+        color = color.lower()
+        color = color.split()
+        valid = simonValid(color)
+        while valid == 0:
+            color = input("Error, enter valid color(s):\n")
+            color = color.lower()
+            color = color.split()
+            valid = simonValid(color)
+        strike = input("Number of strikes:\n")
+        v = 0
+        while not v:
+            try:
+                int(strike)
+                if strike >= 0 and strike < 3:
+                    v=1
+                else:
+                    strike = input("Error, number must be between 0 and 2:\n")
+            except ValueError:
+                strike = input("Error, number must be an integer:\n")
+        vowel = checkVowel()
+        for c in color:
+            if vowel:
+                if strike == 0:
+                    if c == "b":
+                        print("Red\n")
+                    elif c == "r":
+                        print("Blue\n")
+                    elif c == "g":
+                        print("Yellow\n")
+                    else:
+                        print("Green\n")
+                elif strike == 1:
+                    if c == "b":
+                        print("Green\n")
+                    elif c == "r":
+                        print("Yellow\n")
+                    elif c == "g":
+                        print("Blue\n")
+                    else:
+                        print("Red\n")
+                else:
+                    if c == "b":
+                        print("Red\n")
+                    elif c == "r":
+                        print("Green\n")
+                    elif c == "g":
+                        print("Yellow\n")
+                    else:
+                        print("Blue\n")
+            else:
+                if strike == 0:
+                    if c == "b":
+                        print("Yellow\n")
+                    elif c == "r":
+                        print("Blue\n")
+                    elif c == "g":
+                        print("Green\n")
+                    else:
+                        print("Red\n")
+                elif strike == 1:
+                    if c == "b":
+                        print("Blue\n")
+                    elif c == "r":
+                        print("Red\n")
+                    elif c == "g":
+                        print("Yellow\n")
+                    else:
+                        print("Green\n")
+                else:
+                    if c == "b":
+                        print("Green\n")
+                    elif c == "r":
+                        print("Yellow\n")
+                    elif c == "g":
+                        print("Blue\n")
+                    else:
+                        print("Red\n")
+        finish = input("Is there more? ((y)es or (n)o):\n")
+        finish = finish.lower()
+        if finish == "n":
+            break
+    choose()
+
+                
+
 def module(num):
     if num is 1:
         wireMod()
     elif num is 2:
         buttonMod()
+    elif num is 3:
+        simonMod()
     elif num is 0:
         print("Complete")
         return
         
 def choose():
-    choice = input("Please enter module selection:\n1)\tWires\n2)\tButton\n3)\tSymbols\n0)\tExit\n")
+    choice = input("Please enter module selection:\n1)\tWires\n2)\tButton\n3)\tSimon Says\n0)\tExit\n")
     choice = int(choice)
     module(choice)
 

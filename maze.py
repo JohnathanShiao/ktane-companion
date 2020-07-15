@@ -1,7 +1,6 @@
-from collections import defaultdict
+from collections import defaultdict, deque
 
 # Undirected connected graph class RENAME to maze class and adjust
-
 
 class Graph:
 
@@ -9,38 +8,43 @@ class Graph:
         self.graph = defaultdict(list)
 
     # Add a coordinate to the graph and connect it to the four surrouding
-    def add_coord(self, u):
-        if u.y != 6:
-            self.graph[u].append(Coordinate(u.x, u.y + 1))  # up
-        if u.y != 1:
-            self.graph[u].append(Coordinate(u.x, u.y - 1))  # down
-        if u.x != 6:
-            self.graph[u].append(Coordinate(u.x + 1, u.y))  # right
-        if u.x != 1:
-            self.graph[u].append(Coordinate(u.x - 1, u.y))  # left
+    # Add in order left down up right for sorting ease
+    def add_node(self, num):
+        s_num = str(num)
+        if s_num[0] != '1':
+            self.graph[num].append(num - 10) # left
+        if s_num[1] != '1':
+            self.graph[num].append(num - 1) # down
+        if s_num[1] != '6':
+            self.graph[num].append(num + 1) # up
+        if s_num[0] != '6':
+            self.graph[num].append(num + 10) # right
 
-    # Adds wall by removing edge connection, might be able to make this more efficient
-    def add_wall(self, u, v):
-        for key in self.graph:
-            if (key.x == u.x and key.y == u.y):
-                key_u = key
-            if (key.x == v.x and key.y == v.y):
-                key_v = key
+    # Adds walls by removing edges in the adjacency lists
+    def add_wall_up(self, u):
+        self.graph[u].remove(u + 1)
+        self.graph[u + 1].remove(u)
 
-        for coord in self.graph[key_u]:
-            if coord.x == v.x and coord.y == v.y:
-                self.graph[key_u].remove(coord)
+    def add_wall_right(self, u):
+        self.graph[u].remove(u + 10)
+        self.graph[u + 10].remove(u)
 
-        for coord in self.graph[key_v]:
-            if coord.x == u.x and coord.y == u.y:
-                self.graph[key_v].remove(coord)
+    # Return the shortest path from s to t as an array of points including s and t
+    def BFS(self, s, t):
+        
+        # If the goal is the location where it started, return s (aka t)
+        if s == t:
+            return [s]
 
-    def BFS(self, s):
-        visited = [False] * (len(self.graph))
+        visited = defaultdict(list)
+        prior_to = defaultdict(list)
+        for key in self.graph.keys(): # Init defaultdict key values to False
+            visited[key] = False
         queue = []  # BFS Queue
 
         # Mark the source node as visited and enqueue it
         queue.append(s)
+        prior_to[s] = None
         visited[s] = True
 
         while queue:
@@ -52,92 +56,72 @@ class Graph:
             # enqueue it
             for i in self.graph[s]:
                 if visited[i] == False:
+                    prior_to[i] = s
+                    if (i == t):
+                        del queue[:]
+                        break
                     queue.append(i)
                     visited[i] = True
 
-# Maybe instead of storing coordinates as (1, 2), (4, 4) we store as 12, 44 to skip over need for class?
-class Coordinate:
+        instructions = deque()
+        while prior_to[t] != None:
+            instructions.appendleft({'direction': get_instr(prior_to[t], t), 'from': prior_to[t], 'to': t})
+            t = prior_to[t] 
+        return instructions
 
-    # Add compare to method later
-
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-
-    def dir_to(self, to_coord):
-        if self.x == to_coord.x:
-            if (self.y + 1 == to_coord.y):
-                return 'up'
-            elif (self.y - 1 == to_coord.y):
-                return 'down'
-        elif self.y == to_coord.y:
-            if (self.x + 1 == to_coord.x):
-                return 'right'
-            elif (self.x - 1 == to_coord.x):
-                return 'left'
-        else:
-            return 'Error, the two coordinates are not one cardinal step apart.'
-
-    def __str__(self):
-        return f'({self.x}, {self.y})'
-
+def get_instr(source, dest):
+        diff = dest - source
+        if diff == 10:
+            return 'right'
+        if diff == -10:
+            return 'left'
+        if diff == 1:
+            return 'up'
+        if diff == -1:
+            return 'down'
 
 # Testing code for MAZE 1 (1, 5)
 
-# Add all coordinates and connect them (special cases for edge coordinates)
-g = Graph()
-for i in range(1, 7):
-    for j in range(1, 7):
-        g.add_coord(Coordinate(i, j))
+def run_test():
+    # Add all coordinates and connect them
+    g = Graph()
+    for i in range(1, 7):
+        for j in range(1, 7):
+            g.add_node(i * 10 + j)
 
-# Add walls where necessary, removes connections in graph representation
-# DEFINITELY SIMPLIFY by defining funcs to add a wall above and to the left, a bit less wordy and less prone to error? 
-g.add_wall(Coordinate(2, 1), Coordinate(2, 2))
-g.add_wall(Coordinate(2, 1), Coordinate(3, 1))
-g.add_wall(Coordinate(4, 1), Coordinate(5, 1))
-g.add_wall(Coordinate(5, 1), Coordinate(5, 2))
-g.add_wall(Coordinate(2, 2), Coordinate(2, 3))
-g.add_wall(Coordinate(3, 2), Coordinate(4, 2))
-g.add_wall(Coordinate(3, 2), Coordinate(3, 3))
-g.add_wall(Coordinate(4, 2), Coordinate(4, 3))
-g.add_wall(Coordinate(5, 2), Coordinate(5, 3))
-g.add_wall(Coordinate(5, 2), Coordinate(6, 2))
-g.add_wall(Coordinate(1, 3), Coordinate(2, 3))
-g.add_wall(Coordinate(2, 3), Coordinate(2, 4))
-g.add_wall(Coordinate(4, 3), Coordinate(5, 3))
-g.add_wall(Coordinate(5, 3), Coordinate(5, 4))
-g.add_wall(Coordinate(1, 4), Coordinate(2, 4))
-g.add_wall(Coordinate(3, 4), Coordinate(3, 5))
-g.add_wall(Coordinate(3, 4), Coordinate(4, 4))
-g.add_wall(Coordinate(4, 4), Coordinate(4, 5))
-g.add_wall(Coordinate(5, 4), Coordinate(5, 5))
-g.add_wall(Coordinate(1, 5), Coordinate(2, 5))
-g.add_wall(Coordinate(2, 5), Coordinate(2, 6))
-g.add_wall(Coordinate(3, 5), Coordinate(4, 5))
-g.add_wall(Coordinate(5, 5), Coordinate(5, 6))
-g.add_wall(Coordinate(6, 5), Coordinate(6, 6))
-g.add_wall(Coordinate(3, 6), Coordinate(4, 6))
+    # Add walls where necessary, removes connections in graph representation
+    # REDO so walls added go in increasing order, eg go up by y first then right by x
+    g.add_wall_up(21)
+    g.add_wall_right(21)
+    g.add_wall_right(41)
+    g.add_wall_up(51)
+    g.add_wall_up(22)
+    g.add_wall_right(32)
+    g.add_wall_up(32)
+    g.add_wall_up(42)
+    g.add_wall_up(52)
+    g.add_wall_right(52)
+    g.add_wall_right(13)
+    g.add_wall_up(23)
+    g.add_wall_right(43)
+    g.add_wall_up(53)
+    g.add_wall_right(14)
+    g.add_wall_up(34)
+    g.add_wall_right(34)
+    g.add_wall_up(44)
+    g.add_wall_up(54)
+    g.add_wall_right(15)
+    g.add_wall_up(25)
+    g.add_wall_right(35)
+    g.add_wall_up(55)
+    g.add_wall_up(65)
+    g.add_wall_right(36)
 
-for coord in g.graph.keys():
-    print('\n')
-    print('{}: '.format(coord), end="")
-    for edgeto in g.graph[coord]:
-        print(edgeto, end="")
+    instructions = g.BFS(52, 51)
 
-print('\n')
+    for i in range(0, len(instructions)):
+        instr_dict = instructions[i]
+        print('Step {}: Go {} from ({}, {}) to ({}, {}).'.format(i + 1, instr_dict['direction'], \
+            str(instr_dict['from'])[0], str(instr_dict['from'])[1], str(instr_dict['to'])[0], str(instr_dict['to'])[1]))
 
-"""
-# Create a graph given in 
-# the above diagram 
-g = Graph() 
-g.addEdge(0, 1) 
-g.addEdge(0, 2) 
-g.addEdge(1, 2) 
-g.addEdge(2, 0) 
-g.addEdge(2, 3) 
-g.addEdge(3, 3) 
-
-print ("Following is Breadth First Traversal"
-				" (starting from vertex 2)") 
-g.BFS(2) 
-"""
+run_test()

@@ -433,7 +433,52 @@ def memoryMod():
         else:
             print("Something went wrong, please try again.")
     choose()
-    
+
+def morseMod():
+    decode = {'a':'.-','b':'-...','c':'-.-.','e':'.','f':'..-.','h':'....','i':'..','l':'.-..','m':'--',
+    'o':'---','r':'.-.','s':'...','t':'-','v':'...-','x':'-..-',}     #only 15 unique letters for all possible answers
+    code = input("Please enter the first three letters using '.' and '-', separated by spaces:\n")
+    code = code.split()
+    result = ''
+    for letter in code:
+        result += list(decode.keys())[list(decode.values()).index(letter)]
+    freq = 3.500
+    if result == 'she':
+        freq = 3.505
+    elif result == 'hal':
+        freq = 3.515
+    elif result == 'sli':
+        freq = 3.522
+    elif result == 'tri':
+        freq = 3.532
+    elif result == 'box':
+        freq = 3.535
+    elif result == 'lea':
+        freq = 3.542
+    elif result == 'str':
+        freq = 3.545
+    elif result == 'bis':
+        freq = 3.552
+    elif result == 'fli':
+        freq = 3.555
+    elif result == 'bom':
+        freq = 3.565
+    elif result == 'bre':
+        freq = 3.572
+    elif result == 'bri':
+        freq = 3.575
+    elif result == 'ste':
+        freq = 3.582
+    elif result == 'sti':
+        freq = 3.592
+    elif result == 'vec':
+        freq = 3.595
+    elif result == 'bea':
+        freq = 3.600
+    else:
+        print("\nThat was an invalid sequence, please try again.\n")
+    print("\nPlease input frequency {} MHz\n".format(freq))
+    choose()
 def module(num):
     if num is 1:
         wireMod()
@@ -443,12 +488,14 @@ def module(num):
         simonMod()
     elif num is 4:
         memoryMod()
+    elif num is 5:
+        morseMod()
     elif num is 0:
         print("\nComplete")
         return
         
 def choose():
-    choice = input("\nPlease enter module selection:\n1)\tWires\n2)\tButton\n3)\tSimon Says\n4)\tMemory\n0)\tExit\n")
+    choice = input("\nPlease enter module selection:\n1)\tWires\n2)\tButton\n3)\tSimon Says\n4)\tMemory\n5)\tMorse\n0)\tExit\n")
     choice = int(choice)
     module(choice)
 

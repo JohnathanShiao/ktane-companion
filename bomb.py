@@ -1,5 +1,6 @@
 import re
-from collections import OrderedDict
+import numpy as np
+
 def wire3(colors):
     i = 0
     for wire in colors:
@@ -331,8 +332,8 @@ def simonMod():
             break
     choose()
 
-def memModDisplay():
-    display = input("What is the number displayed?:\n")
+def memModDisplay(n):
+    display = input("\nStage %d: What is the number displayed?:\n" %n)
     valid = 0
     while not valid:
         try:
@@ -348,118 +349,91 @@ def memModDisplay():
 def memModAnswer(choice):
     if choice:
         display = input("What position is the label?:(1-4)\n")
-        valid = 0
-        while not valid:
-            try:
-                int(display)
-                if display > 0 and display < 5:
-                    valid = 1
-                else:
-                    display = input("Error, number must be between 1 and 4:\n")
-            except ValueError:
-                display = input("Error, number must be an integer between 1 and 4:\n")
-            if display == 1:
-                return "1ST"
-            elif display == 2:
-                return "2ND"
-            elif display == 3:
-                return "3RD"
-            else:
-                return "4TH"
     else:
         display = input("What number is the label @ stated position?:\n")
-        valid = 0
-        while not valid:
-            try:
-                int(display)
-                if display > 0 and display < 5:
-                    valid = 1
-                else:
-                    display = input("Error, number must be between 1 and 4:\n")
-            except ValueError:
-                display = input("Error, number must be an integer between 1 and 4:\n")
+    valid = 0
+    while not valid:
+        try:
+            int(display)
+            if display > 0 and display < 5:
+                valid = 1
+            else:
+                display = input("Error, number must be between 1 and 4:\n")
+        except ValueError:
+            display = input("Error, number must be an integer between 1 and 4:\n")
     return display
 
 def memoryMod():
-    mem = OrderedDict()
-    display = memModDisplay()           #1
-    if display == 1 or display == 2:
-        print("\nPress button in 2ND position\n")
-        button = memModAnswer(0)
-        mem["2ND"] = button
-    elif display == 3:
-        print("\nPress button in 3RD position\n")
-        button = memModAnswer(0)
-        mem["3RD"] = button
-    else:
-        print("\nPress button in 4TH position\n")
-        button = memModAnswer(0)
-        mem["4TH"] = button
-    display = memModDisplay()           #2
-    if display == 1:
-        print("\nPress button LABELED 4\n")
-        button = memModAnswer(1)
-        mem[button] = 4
-    elif display == 2 or display == 4:
-        item = list(mem.keys())
-        pos = item[0]
-        print("\nPress button in %s position\n" % (pos))
-        button = memModAnswer(0)
-        mem[pos] = button
-    else:
-        print("\nPress button in 1ST position\n")
-        button = memModAnswer(0)
-        mem["1ST"] = button
-    display = memModDisplay()           #3
-    if display == 1 or display == 2:
-        item = list(mem.values())
-        label = item[2-display]
-        print("\nPress button LABELED %s\n" % (label))
-        button = memModAnswer(1)
-        mem[button] = label
-    elif display == 3:
-        print("\nPress button in 3RD position\n")
-        button = memModAnswer(0)
-        mem["3RD"] = button
-    else:
-        print("\nPress button LABELED 4\n")
-        button = memModAnswer(1)
-        mem[button] = 4
-    display = memModDisplay()         #4
-    if display == 1:
-        item = list(mem.keys())
-        pos = item[0]
-        print("\nPress button in %s position\n" % (pos))
-        button = memModAnswer(0)
-        mem[pos] = button
-    elif display == 2:
-        print("\nPress button in 1ST position\n")
-        button = memModAnswer(0)
-        mem["1ST"] = button
-    else:
-        item = list(mem.keys())
-        pos = item[1]
-        print("\nPress button in %s position\n" % (pos))
-        button = memModAnswer(0)
-        mem[pos] = button
-    display = memModDisplay()           #5
-    if display:
-        if display == 4:
-            display = 3
-        elif display == 3:
-            display = 4
-        item = list(mem.values())
-        label = item[display]
-        print("\nPress button LABELED %s\n" % (label))
-        button = memModAnswer(1)
-        mem[button] = label
+    mem = np.array([0,0,0,0,0])
+    for x in range(5):
+        stage = x+1
+        display = memModDisplay(stage)
+        if (stage==2 and display==3) or (stage==4 and display==2):  #first position
+            print("\nPress button in 1ST position\n")
+            button = memModAnswer(0)
+            mem[x] = 10+button
+        elif stage==1 and (display==1 or display==2):           #second position
+            print("\nPress button in 2ND position\n")
+            button = memModAnswer(0)
+            mem[x] = 20+button
+        elif(stage==1 and display==3) or (stage==3 and display==3): #third position
+            print("\nPress button in 3RD position\n")
+            button = memModAnswer(0)
+            mem[x] = 30+button
+        elif stage==1 and display==4:                           #fourth position
+            print("\nPress button in 4TH position\n")
+            button = memModAnswer(0)
+            mem[x] = 40+button
+        elif(stage==2 and display==1) or (stage==3 and display==4): #label 4
+            print("\nPress button LABELED 4\n")
+            button = memModAnswer(1)
+            mem[x] = (button*10) + 4
+        elif(stage==2 and (display==2 or display==4)) or (stage==4 and display==1):  #stage 1 position
+            pos = mem[0]/10
+            if pos == 1:
+                order = "1ST"
+            elif pos == 2:
+                order = "2ND"
+            elif pos == 3:
+                order = "3RD"
+            else:
+                order = "4TH"
+            print("\nPress the button in the {} position\n".format(order))
+            button = memModAnswer(0)
+            mem[x] = (pos*10) + button
+        elif(stage==4 and (display==3 or display==4)):  #stage 2 position
+            pos = mem[1]/10
+            if pos == 1:
+                order = "1ST"
+            elif pos == 2:
+                order = "2ND"
+            elif pos == 3:
+                order = "3RD"
+            else:
+                order = "4TH"
+            print("\nPress the button in the {} position\n".format(order))
+            button = memModAnswer(0)
+            mem[x] = (pos*10) + button
+        elif(stage==3 and display==2) or (stage==5 and display==1):               #stage 1 label
+            pos = mem[0]%10
+            print("\nPress the button labeled {}\n".format(pos))
+            button = memModAnswer(0)
+            mem[x] = button*10 + pos
+        elif(stage==3 and display==1) or (stage==5 and display==2):               #stage 2 label
+            pos = mem[1]%10
+            print("\nPress the button labeled {}\n".format(pos))
+            button = memModAnswer(0)
+            mem[x] = button*10 + pos
+        elif stage==5 and display==4:                                             #stage 3 label
+            pos = mem[2]%10
+            print("\nPress the button labeled {}\n".format(pos))
+        elif stage==5 and display==3:                                             #stage 4 label
+            pos = mem[3]%10
+            print("\nPress the button labeled {}\n".format(pos))
+        else:
+            print("Something went wrong, please try again.")
     choose()
     
-
-
-
-
-
 def module(num):
     if num is 1:
         wireMod()
@@ -470,7 +444,7 @@ def module(num):
     elif num is 4:
         memoryMod()
     elif num is 0:
-        print("Complete")
+        print("\nComplete")
         return
         
 def choose():

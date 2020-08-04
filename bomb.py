@@ -438,6 +438,7 @@ def morseMod():
     decode = {'a':'.-','b':'-...','c':'-.-.','e':'.','f':'..-.','h':'....','i':'..','l':'.-..','m':'--',
     'o':'---','r':'.-.','s':'...','t':'-','v':'...-','x':'-..-',}     #only 15 unique letters for all possible answers
     code = input("Please enter the first three letters using '.' and '-', separated by spaces:\n")
+    #sanitize morse
     code = code.split()
     result = ''
     for letter in code:
@@ -479,6 +480,99 @@ def morseMod():
         print("\nThat was an invalid sequence, please try again.\n")
     print("\nPlease input frequency {} MHz\n".format(freq))
     choose()
+
+def compwireMod():
+    port = input("Is there a parallel port on the bomb? (y/n):\n")
+    if port == 'y':
+        parallel = 1
+    else:
+        parallel = 0
+    done = 0
+    while not done:
+        wire = input("Describe your wire using color (red then/or blue), symbol, and light\nExample:\nrb*l = red&blue&star&light\nw = nothing\nrbl = red&blue&light\nenter 'd' for done):\n")
+        #sanitize wire
+        if wire == 'l' or wire == 'b*' or wire == 'rb*l':
+            print("\nDO NOT CUT\n")         #dont cut
+        elif wire == 'w' or wire == 'r*' or wire == '*':
+            print("\nCUT\n")                #cut
+        elif wire == 'r' or wire == 'b' or wire == 'rb' or wire == 'rbl':
+            if int(serial[5])%2==0:              #serial
+                print("\nCUT\n")
+            else:
+                print("\nDO NOT CUT\n")
+        elif wire == 'rl' or wire == 'rb*' or wire == 'b*l':
+            if parallel:                    #parallel
+                print("\nCUT\n")
+            else:
+                print("\nDO NOT CUT\n")
+        elif wire == 'rl' or wire == 'r*l' or wire == '*l':
+            if battery >= 2:
+                print("\nCUT\n")
+            else:
+                print("\nDO NOT CUT\n")
+        elif wire == 'd':
+            done = 1
+    choose()
+
+def wiresequenceMod():
+    red = 0
+    black = 0
+    blue = 0
+    done = 0
+    while not done:
+        wire = input("\nPlease enter the color and what letter is connected to it separated by a space: (black = k, done = d)\nExample: \nr a = Red to A\nk c = Black to C\n")
+        #wire sanitize
+        wire = wire.lower()
+        wire = wire.split()
+        if wire[0] == 'r':
+            red+=1
+            color = 0
+        elif wire[0] == 'b':
+            blue+=1
+            color = 1
+        elif wire[0] == 'k':
+            black+=1
+            color = 2
+        letter = wire[1]
+        if color == 0:          #red
+            if (red == 3 or red == 4 or red == 6 or red == 7 or red==8) and letter == 'a':
+                print("\nCUT\n")
+            elif (red == 2 or red == 5 or red == 7 or red == 8 or red == 0) and letter == 'b':
+                print("\nCUT\n")
+            elif (red == 1 or red == 4 or red == 6 or red == 7) and letter == 'c':
+                print("\nCUT\n")
+            else:
+                print("\nSKIP\n")
+        elif color == 1:        #blue
+            if (blue == 2 or blue == 4 or blue == 8 or blue == 9) and letter == 'a':
+                print("\nCUT\n")
+            elif (blue == 1 or blue == 3 or blue == 5 or blue == 6) and letter == 'b':
+                print("\nCUT\n")
+            elif (blue == 2 or blue == 6 or blue == 8) and letter == 'c':
+                print("\nCUT\n")
+            else:
+                print("\nSKIP\n")
+        else:                   #black
+            if (black == 1 or black == 2 or black == 4 or black == 7) and letter == 'a':
+                print("\nCUT\n")
+            elif (black == 1 or black == 3 or black == 5 or black == 6 or black == 7) and letter == 'b':
+                print("\nCUT\n")
+            elif (black == 1 or black == 2 or black == 4 or black == 6 or black == 8 or black == 9) and letter == 'c':
+                print("\nCUT\n")
+            else:
+                print("\nSKIP\n")
+        if wire == 'd':
+            done = 1
+    choose()
+
+def mazeMod():
+    print("WIP")
+    choose()
+
+def passMod()
+    print("WIP")
+    choose()
+
 def module(num):
     if num is 1:
         wireMod()
@@ -490,12 +584,20 @@ def module(num):
         memoryMod()
     elif num is 5:
         morseMod()
+    elif num is 6:
+        compwireMod()
+    elif num is 7:
+        wiresequenceMod()
+    elif num is 8:
+        mazeMod()
+    elif num is 9:
+        passMod()
     elif num is 0:
         print("\nComplete")
         return
         
 def choose():
-    choice = input("\nPlease enter module selection:\n1)\tWires\n2)\tButton\n3)\tSimon Says\n4)\tMemory\n5)\tMorse\n0)\tExit\n")
+    choice = input("\nPlease enter module selection:\n1)\tWires\n2)\tButton\n3)\tSimon Says\n4)\tMemory\n5)\tMorse\n6)\tComplicated Wires\n7)\tWire Sequences\n8)\tMaze\n9)\tPassword\n0)\tExit\n")
     choice = int(choice)
     module(choice)
 

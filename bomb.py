@@ -579,7 +579,7 @@ def whosonMod():
     'nothing': ["uhhh","right","okay","middle","yes","blank","no","press","left","what","wait","first","nothing","ready"],
     'yes': ["okay","right","uhhh","middle","first","what","press","ready","nothing","yes","left","blank","no","wait"],
     'what': ["uhhh","what","left","nothing","ready","blank","middle","no","okay","first","wait","yes","press","right"],
-    'uhhh': ["ready","nothing""left","what","okay","yes","ight","no","press","blank","uhhh","middle","wait","first"],
+    'uhhh': ["ready","nothing","left","what","okay","yes","ight","no","press","blank","uhhh","middle","wait","first"],
     'left': ["right","left","first","no","middle","yes","blank","what","uhhh","wait","press","ready","okay","nothing"],
     'right': ["yes","nothing","ready","press","no","wait","what","right","middle","left","uhhh","blank","okay","first"],
     'middle': ["blank","ready","okay","what","nothing","press","no","wait","left","middle","right","first","uhhh","yes"],
@@ -630,7 +630,26 @@ def mazeMod():
     choose()
 
 def passMod():
-    print("WIP")
+    tableList = ["about","after","again","below","could","every","first","found","great","house",
+    "large","learn","never","other","place","plant""point","right","small","sound","spell","still","study","their","there",
+    "these","thing","think","three","water","where","which","world","would","write"]
+    first = input("\nPlease enter the 6 letters available in the first column:\n")
+    second = input("\nPlease enter the 6 letters available in the second column:\n")
+    third = input("\nPlease enter the 6 letters available in the third column:\n")
+    first = first.lower()
+    second = second.lower()
+    third = third.lower()
+    first = first.split()
+    second = second.split()
+    third = third.split()
+    for a in first:
+        for b in second:
+            for c in third:
+                attempt = a+b+c
+                for word in tableList:
+                    if word.find(attempt)==0:
+                        print("\nTry the word:\n {}".format(word))
+                        choose()
     choose()
 
 def module(num):
@@ -654,12 +673,14 @@ def module(num):
         passMod()
     elif num is 10:
         whosonMod()
+    elif num is 11:
+        passMod()
     elif num is 0:
         print("\nComplete")
         return
         
 def choose():
-    choice = input("\nPlease enter module selection:\n1)\tWires\n2)\tButton\n3)\tSimon Says\n4)\tMemory\n5)\tMorse\n6)\tComplicated Wires\n7)\tWire Sequences\n8)\tMaze\n9)\tPassword\n10)\tWhose on First\n0)\tExit\n")
+    choice = input("\nPlease enter module selection:\n1)\tWires\n2)\tButton\n3)\tSimon Says\n4)\tMemory\n5)\tMorse\n6)\tComplicated Wires\n7)\tWire Sequences\n8)\tMaze\n9)\tPassword\n10)\tWhose on First\n11)\tPasswords\n0)\tExit\n")
     choice = int(choice)
     module(choice)
 

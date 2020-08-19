@@ -72,13 +72,13 @@ class Graph:
 def get_instr(source, dest):
         diff = dest - source
         if diff == 10:
-            return 'right'
+            return 'RIGHT'
         if diff == -10:
-            return 'left'
+            return 'LEFT'
         if diff == 1:
-            return 'up'
+            return 'UP'
         if diff == -1:
-            return 'down'
+            return 'DOWN'
 
 #Determine which maze is being used
 def selectMaze():
@@ -228,7 +228,7 @@ def mazeEnd():
             y = input("\nError: Coordinate must be between 1-6:\n")
     return x*10 + y
 
-def mazeMod():
+def maze():
     # Add all coordinates and connect them
     g = selectMaze()
     start = mazeStart()
@@ -242,5 +242,3 @@ def mazeMod():
         instr_dict = instructions[i]
         print('Step {}: Go {} from ({}, {}) to ({}, {}).'.format(i + 1, instr_dict['direction'], \
             str(instr_dict['from'])[0], str(instr_dict['from'])[1], str(instr_dict['to'])[0], str(instr_dict['to'])[1]))
-
-mazeMod()

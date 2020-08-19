@@ -1,5 +1,8 @@
 import re
 import numpy as np
+from maze import Graph, get_instr,selectMaze,mazeStart,mazeEnd,maze
+
+from collections import defaultdict, deque
 
 def wire3(colors):
     i = 0
@@ -67,7 +70,7 @@ def wire4(colors):
         print("first")
     
 def wire5(colors):
-    i=0
+    i = 0
     for wire in colors:
         colors[i] = wire.lower()
         i+=1
@@ -79,11 +82,11 @@ def wire5(colors):
             red+=1
         elif wire == "y":
             yellow+=1
-        elif wire == "b":
-            i=1
+        elif wire == "k":
+            i = 1
     if i==1 and int(serial[5])%2!=0:
         print("fourth")
-    elif red == 1 and yellow>1:
+    elif red == 1 and yellow > 1:
         print("first")
     elif i == 0:
         print("second")
@@ -524,6 +527,9 @@ def wiresequenceMod():
         #wire sanitize
         wire = wire.lower()
         wire = wire.split()
+        if wire[0] == 'd':
+            done = 1
+            break
         if wire[0] == 'r':
             red+=1
             color = 0
@@ -561,8 +567,6 @@ def wiresequenceMod():
                 print("\nCUT\n")
             else:
                 print("\nSKIP\n")
-        if wire == 'd':
-            done = 1
     choose()
 
 def whosonMod():
@@ -626,7 +630,7 @@ def whosonMod():
     choose()
 
 def mazeMod():
-    print("WIP")
+    maze()
     choose()
 
 def passMod():

@@ -6,10 +6,7 @@ from collections import defaultdict, deque
 
 def wire3(colors):
     i = 0
-    for wire in colors:
-        colors[i] = wire.lower()
-        i+=1
-    i = 0
+    #Lowercase all and check for red wires
     for wire in colors:
         wire = wire.lower()
         if wire == 'r':
@@ -17,15 +14,18 @@ def wire3(colors):
     if i == 0:
         print('second')
     else:
-        if colors[2].lower() == 'w':
+        #If last wire is white
+        if colors[2] == 'w':
             print('last')
         else:
             i = 0
             for wire in colors:
-                if wire.lower() == 'bl':
+                #Count the blues
+                if wire.lower() == 'b':
                     i+=1
             if i > 1:
-                result = len(colors) - 1 - colors[::-1].index('bl')
+                #Find location of last blue
+                result = len(colors) - 1 - colors[::-1].index('b')
                 if result == 0:
                     print('first')
                 elif result == 1:
@@ -36,21 +36,20 @@ def wire3(colors):
                 print("last")
 
 def wire4(colors):
-    i=0
-    for wire in colors:
-        colors[i] = wire.lower()
-        i+=1
     red=0
     blue=0
     yellow=0
     for wire in colors:
+        wire = wire.lower()
         if wire == "r":
             red+=1
-        elif wire == "bl":
+        elif wire == "b":
             blue+=1
         elif wire == "y":
             yellow+=1
+    #If greater than 1 red, and last digit serial is even
     if red > 1 and int(serial[5])%2 != 0:
+        #Find last red
         result = len(colors) - 1 - colors[::-1].index('r')
         if result == 0:
             print('first')
@@ -70,20 +69,18 @@ def wire4(colors):
         print("first")
     
 def wire5(colors):
-    i = 0
-    for wire in colors:
-        colors[i] = wire.lower()
-        i+=1
     red = 0
     yellow = 0
     i = 0
     for wire in colors:
+        wire = wire.lower()
         if wire == "r":
             red+=1
         elif wire == "y":
             yellow+=1
         elif wire == "k":
             i = 1
+    #If there a black and last serial digit is odd
     if i==1 and int(serial[5])%2!=0:
         print("fourth")
     elif red == 1 and yellow > 1:
@@ -94,20 +91,18 @@ def wire5(colors):
         print("first")
 
 def wire6(colors):
-    i=0
-    for wire in colors:
-        colors[i] = wire.lower()
-        i+=1
     yellow=0
     white=0
     i=0
     for wire in colors:
+        wire = wire.lower()
         if wire == "w":
             white+=1
         elif wire == "y":
             yellow+=1
         elif wire == "r":
             i=1
+    #If no yellow and last serial digit is odd
     if yellow == 0 and int(serial[5])%2!=0:
         print("third")
     elif yellow == 1 and white >1:
@@ -127,12 +122,15 @@ def buttonMod():
         val = re.match(col,color)
     text = input("Text on button?:\n")
     text = text.lower()
+    while re.search('\d+',text):
+        text = input("Error, there are digits detected")
+        text = text.lower() 
     v = 0
     while v != 1:
         if text == "detonate" or text == "abort" or text == "press" or text == "hold":
             v = 1
         else:
-            text = input("Error, input a valid word:\n")
+            text = input("Error, input a valid word: (detonate, abort, press, hold)\n")
             text = text.lower()
     frk = 0
     car = 0
@@ -141,17 +139,7 @@ def buttonMod():
             frk = 1
         elif ind == "car":
             car = 1
-    if color=="b" and text == "abort":
-        print("Hold and release with number in any position\nBlue=4\nWhite=1\nYellow=5\nOther=1\n")
-    elif battery >1 and text == "detonate":
-        print("Press and immediate release")
-    elif color == "w" and car == 1:
-        print("Hold and release with number in any position\nBlue=4\nWhite=1\nYellow=5\nOther=1\n")
-    elif battery>2 and frk == 1:
-        print("Press and immediate release")
-    elif color == "y":
-        print("Hold and release with number in any position\nBlue=4\nWhite=1\nYellow=5\nOther=1\n")
-    elif color == "r" and text == "hold":
+    if (battery >1 and text == "detonate") or (battery>2 and frk == 1) or (color=="r" and text == "hold"):
         print("Press and immediate release")
     else:
         print("Hold and release with number in any position\nBlue=4\nWhite=1\nYellow=5\nOther=1\n")
@@ -182,18 +170,27 @@ def batteryValid():
 
 def indicatorValid():
     global indicators
+    indList = ["snd","clr","car","ind","frq","sig","nsa","msa","trn","bob","frk"]
     valid = 0
     if len(indicators) == 0:
         valid = 1
     while not valid:
         for led in indicators:
+            led = led.lower()
             if len(led) != 3:
                 valid = 0
                 indicators = input("Error, input valid indicators:\n")
                 indicators = indicators.split()
                 break
             else:
-                valid = 1
+                valid= 0
+                for x in indList:
+                    if x == led:
+                        valid = 1
+                if not valid:
+                    indicators = input("Error, input valid indicators:\n")
+                    indicators = indicators.split()
+                    break
 
 def checkVowel():
     vowel = re.compile("[aAeEiIoOuU]")
@@ -682,13 +679,13 @@ def module(num):
     elif num is 0:
         print("\nComplete")
         return
-        
+            
 def choose():
     choice = input("\nPlease enter module selection:\n1)\tWires\n2)\tButton\n3)\tSimon Says\n4)\tMemory\n5)\tMorse\n6)\tComplicated Wires\n7)\tWire Sequences\n8)\tMaze\n9)\tPassword\n10)\tWhose on First\n11)\tPasswords\n0)\tExit\n")
     choice = int(choice)
     module(choice)
 
-serial = input("Enter the serial number:\n")
+serial = input("Enter the serial number: (Case insensitive)\n")
 serialValid()
 battery = input("Enter number of batteries:\n")
 batteryValid()

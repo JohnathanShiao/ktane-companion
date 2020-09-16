@@ -133,12 +133,9 @@ def buttonMod():
             text = input("Error, input a valid word: (detonate, abort, press, hold)\n")
             text = text.lower()
     frk = 0
-    car = 0
     for ind in list(indicators):
         if ind == "frk":
             frk = 1
-        elif ind == "car":
-            car = 1
     if (battery >1 and text == "detonate") or (battery>2 and frk == 1) or (color=="r" and text == "hold"):
         print("Press and immediate release")
     else:

@@ -216,6 +216,7 @@ def wireMod():
         wires = wires.split()
     wirecol = re.compile("[rRwWyYbBkK]")
     v = 0
+    #validate colors
     while v == 0:
         for w in wires:
             color = re.match(wirecol,w)
@@ -256,6 +257,7 @@ def simonMod():
             valid = simonValid(color)
         strike = input("Number of strikes:\n")
         v = 0
+        #Sanitize strike number
         while not v:
             try:
                 int(strike)
@@ -332,6 +334,7 @@ def simonMod():
 def memModDisplay(n):
     display = input("\nStage %d: What is the number displayed?:\n" %n)
     valid = 0
+    #validate 1-4 ints
     while not valid:
         try:
             int(display)
@@ -347,8 +350,9 @@ def memModAnswer(choice):
     if choice:
         display = input("What position is the label?:(1-4)\n")
     else:
-        display = input("What number is the label @ stated position?:\n")
+        display = input("What number is the label @ the stated position?:(1-4)\n")
     valid = 0
+    #validate label
     while not valid:
         try:
             int(display)
@@ -362,6 +366,7 @@ def memModAnswer(choice):
 
 def memoryMod():
     mem = np.array([0,0,0,0,0])
+    #position and lable are stored as tens digit and ones digit respectively
     for x in range(5):
         stage = x+1
         display = memModDisplay(stage)
@@ -435,11 +440,20 @@ def morseMod():
     decode = {'a':'.-','b':'-...','c':'-.-.','e':'.','f':'..-.','h':'....','i':'..','l':'.-..','m':'--',
     'o':'---','r':'.-.','s':'...','t':'-','v':'...-','x':'-..-',}     #only 15 unique letters for all possible answers
     code = input("Please enter the first three letters using '.' and '-', separated by spaces:\n")
-    #sanitize morse
+    #sanitize morse by checking for letters, digits, or underscore
+    delim = re.compile("[a-zA-Z0-9,_=!@#$%^&*]")
+    v = re.match(delim,code)
+    while v:
+        code = input("Error, detected characters that were not '.' or '-' please try again:\n")
+        v = re.match(delim,code)
     code = code.split()
     result = ''
     for letter in code:
-        result += list(decode.keys())[list(decode.values()).index(letter)]
+        try:
+            result += list(decode.keys())[list(decode.values()).index(letter)]
+        except ValueError:
+            print("Error, there was an invalid morse sequence for a letter.")
+            morseMod()
     freq = 3.500
     if result == 'she':
         freq = 3.505
@@ -473,9 +487,10 @@ def morseMod():
         freq = 3.595
     elif result == 'bea':
         freq = 3.600
+    if freq != 3.500:
+        print("\nPlease input frequency {} MHz\n".format(freq))
     else:
-        print("\nThat was an invalid sequence, please try again.\n")
-    print("\nPlease input frequency {} MHz\n".format(freq))
+        print("Error, that was not a sequence of valid letters, please try again\n")
     choose()
 
 def compwireMod():

@@ -501,8 +501,15 @@ def compwireMod():
         parallel = 0
     done = 0
     while not done:
-        wire = input("Describe your wire using color (red then/or blue), symbol, and light\nExample:\nrb*l = red&blue&star&light\nw = nothing\nrbl = red&blue&light\nenter 'd' for done):\n")
+        wire = input("Describe your wire using color (red then/or blue), symbol, and light\nExample:\nrb*l = red&blue&star&light\nwhite wires should not be input\nrbl = red&blue&light\nenter 'd' for done):\n")
         #sanitize wire
+        wire = wire.lower()
+        val = re.compile("[rb*l]")
+        v = re.match(val,wire)
+        while not v:
+            wire = input("Please enter valid characters to describe your wire, valid characters are: (r, b, *, l)\n")
+            wire = wire.lower()
+            v = re.match(val,wire)
         if wire == 'l' or wire == 'b*' or wire == 'rb*l':
             print("\nDO NOT CUT\n")         #dont cut
         elif wire == 'w' or wire == 'r*' or wire == '*':
@@ -535,7 +542,26 @@ def wiresequenceMod():
         wire = input("\nPlease enter the color and what letter is connected to it separated by a space: (black = k, done = d)\nExample: \nr a = Red to A\nk c = Black to C\n")
         #wire sanitize
         wire = wire.lower()
+        col = re.compile("[kbr]")
+        alph = re.compile("[abc]")
         wire = wire.split()
+        v = 0
+        x = 0
+        while not v:
+            if x == 0:
+                v = re.match(col,wire[x])
+            else:
+                v = re.match(alph,wire[x])
+            if not v:
+                wire = input("Error, detected invalid characters, please try again\n")
+                wire = wire.lower()
+                wire = wire.split() 
+                x = 0
+            else:
+                x+=1
+                if x>1:
+                    break
+                v = 0
         if wire[0] == 'd':
             done = 1
             break
@@ -616,6 +642,7 @@ def whosonMod():
     done = 0
     while not done:
         display = input("\nPlease input word on display, please enter ' ' for a blank display:\n")
+        #Sanitize display
         if display == 'd':
             break
         label = list(displayDict.values())[list(displayDict.keys()).index(display)]
@@ -646,15 +673,59 @@ def passMod():
     tableList = ["about","after","again","below","could","every","first","found","great","house",
     "large","learn","never","other","place","plant""point","right","small","sound","spell","still","study","their","there",
     "these","thing","think","three","water","where","which","world","would","write"]
+    num = re.compile("[0-9]")
     first = input("\nPlease enter the 6 letters available in the first column:\n")
-    second = input("\nPlease enter the 6 letters available in the second column:\n")
-    third = input("\nPlease enter the 6 letters available in the third column:\n")
+    v = 0
     first = first.lower()
-    second = second.lower()
-    third = third.lower()
     first = first.split()
+    x = 0
+    while not v:
+        v = re.match(num, first[x])
+        if v:
+            print("{}".format(first[x]))
+            first = input("Error, detected invalid characters, please try again\n")
+            first = first.lower()
+            first = first.split() 
+            x = 0
+        else:
+            x+=1
+            if x>5:
+                break
+        v = 0
+    second = input("\nPlease enter the 6 letters available in the second column:\n")
+    v = 0
+    second = second.lower()
     second = second.split()
+    x = 0
+    while not v:
+        v = re.match(num, second[x])
+        if v:
+            second = input("Error, detected invalid characters, please try again\n")
+            second = second.lower()
+            second = second.split() 
+            x = 0
+        else:
+            x+=1
+            if x>5:
+                break
+        v = 0
+    third = input("\nPlease enter the 6 letters available in the third column:\n")
+    v = 0
+    third = third.lower()
     third = third.split()
+    x = 0
+    while not v:
+        v = re.match(num,third[x])
+        if v:
+            third = input("Error, detected invalid characters, please try again\n")
+            third = third.lower()
+            third = third.split() 
+            x = 0
+        else:
+            x+=1
+            if x>5:
+                break
+        v = 0
     for a in first:
         for b in second:
             for c in third:
@@ -662,7 +733,6 @@ def passMod():
                 for word in tableList:
                     if word.find(attempt)==0:
                         print("\nTry the word:\n {}".format(word))
-                        choose()
     choose()
 
 def module(num):
@@ -686,14 +756,12 @@ def module(num):
         passMod()
     elif num is 10:
         whosonMod()
-    elif num is 11:
-        passMod()
     elif num is 0:
         print("\nComplete")
         return
             
 def choose():
-    choice = input("\nPlease enter module selection:\n1)\tWires\n2)\tButton\n3)\tSimon Says\n4)\tMemory\n5)\tMorse\n6)\tComplicated Wires\n7)\tWire Sequences\n8)\tMaze\n9)\tPassword\n10)\tWhose on First\n11)\tPasswords\n0)\tExit\n")
+    choice = input("\nPlease enter module selection:\n1)\tWires\n2)\tButton\n3)\tSimon Says\n4)\tMemory\n5)\tMorse\n6)\tComplicated Wires\n7)\tWire Sequences\n8)\tMaze\n9)\tPassword\n10)\tWhose on First\n0)\tExit\n")
     choice = int(choice)
     module(choice)
 

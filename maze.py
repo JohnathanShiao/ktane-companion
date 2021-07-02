@@ -89,7 +89,7 @@ def selectMaze():
     while not valid:
         numx = input("\nPlease input the x coordinate of ONE of the green circle: (1-6)\n")
         try:
-            int(numx)
+            numx = int(numx)
             if numx>0 and numx<7:
                 valid = 1
         except ValueError:
@@ -98,7 +98,7 @@ def selectMaze():
     while not valid:
         numy = input("\nPlease input the y coordinate of the SAME green circle: (1-6)\n")
         try:
-            int(numy)
+            numy =int(numy)
             if numy>0 and numy<7:
                 valid = 1
         except ValueError:
@@ -191,7 +191,7 @@ def mazeStart():
     while not valid:
         x = input("\nPlease input the x coordinate of the WHITE dot: (1-6)\n")
         try:
-            int(x)
+            x = int(x)
             if x >0 and x<7:
                 valid = 1
         except ValueError:
@@ -200,7 +200,7 @@ def mazeStart():
     while not valid:
         y = input("\nPlease input the y coordinate of the WHITE dot: (1-6)\n")
         try:
-            int(y)
+            y = int(y)
             if y>0 and y<7:
                 valid = 1
         except ValueError:
@@ -212,7 +212,7 @@ def mazeEnd():
     while not valid:
         x = input("\nPlease input the x coordinate of the RED triangle: (1-6)\n")
         try:
-            int(x)
+            x = int(x)
             if x >0 and x<7:
                 valid = 1
         except ValueError:
@@ -221,7 +221,7 @@ def mazeEnd():
     while not valid:
         y = input("\nPlease input the y coordinate of the RED triangle: (1-6)\n")
         try:
-            int(y)
+            y = int(y)
             if y>0 and y<7:
                 valid = 1
         except ValueError:

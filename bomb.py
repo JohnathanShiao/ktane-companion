@@ -157,8 +157,8 @@ def batteryValid():
     valid = 0
     while not valid:
         try:
-            int(battery)
-            if battery >= 0:
+            battery = int(battery)
+            if int(battery) >= 0:
                 valid=1
             else:
                 battery = input("Error, number must be positive:\n")
@@ -206,9 +206,9 @@ def simonValid(sequence):
     return 1
 
 def wireMod():
-    num = input("Number of wires?\n")
+    num = int(input("Number of wires?\n"))
     while num > 6 or num < 3:
-        num = input("Error, number must be between 3 and 6:\n")
+        num = int(input("Error, number must be between 3 and 6:\n"))
     wires = input("Order of Wires (using the first letter only, except for Black = k, Blue = b):\n")
     wires = wires.split()
     while len(wires) != num:
@@ -255,12 +255,12 @@ def simonMod():
             color = color.lower()
             color = color.split()
             valid = simonValid(color)
-        strike = input("Number of strikes:\n")
+        strike = int(input("Number of strikes:\n"))
         v = 0
         #Sanitize strike number
         while not v:
             try:
-                int(strike)
+                strike = int(strike)
                 if strike >= 0 and strike < 3:
                     v=1
                 else:
@@ -337,7 +337,7 @@ def memModDisplay(n):
     #validate 1-4 ints
     while not valid:
         try:
-            int(display)
+            display = int(display)
             if display > 0 and display < 5:
                 valid = 1
             else:
@@ -355,7 +355,7 @@ def memModAnswer(choice):
     #validate label
     while not valid:
         try:
-            int(display)
+            display = int(display)
             if display > 0 and display < 5:
                 valid = 1
             else:
@@ -542,7 +542,7 @@ def wiresequenceMod():
         wire = input("\nPlease enter the color and what letter is connected to it separated by a space: (black = k, done = d)\nExample: \nr a = Red to A\nk c = Black to C\n")
         #wire sanitize
         wire = wire.lower()
-        col = re.compile("[kbr]")
+        col = re.compile("[kbrd]")
         alph = re.compile("[abc]")
         wire = wire.split()
         v = 0

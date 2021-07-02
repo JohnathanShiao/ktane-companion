@@ -765,7 +765,7 @@ def choose():
     choice = int(choice)
     module(choice)
 
-serial = input("Enter the serial number: (Case insensitive)\n")
+serial = input("Enter the serial number:  (Case insensitive)\n")
 serialValid()
 battery = input("Enter number of batteries:\n")
 batteryValid()

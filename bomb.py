@@ -504,7 +504,7 @@ def compwireMod():
         wire = input("Describe your wire using color (red then/or blue), symbol, and light\nExample:\nrb*l = red&blue&star&light\nwhite wires should not be input\nrbl = red&blue&light\nenter 'd' for done):\n")
         #sanitize wire
         wire = wire.lower()
-        val = re.compile("[rb*l]")
+        val = re.compile("[rb*ld]")
         v = re.match(val,wire)
         while not v:
             wire = input("Please enter valid characters to describe your wire, valid characters are: (r, b, *, l)\n")
@@ -548,6 +548,9 @@ def wiresequenceMod():
         v = 0
         x = 0
         while not v:
+            if wire[0] == 'd':
+                done = 1
+                choose()
             if x == 0:
                 v = re.match(col,wire[x])
             else:
@@ -562,9 +565,6 @@ def wiresequenceMod():
                 if x>1:
                     break
                 v = 0
-        if wire[0] == 'd':
-            done = 1
-            break
         if wire[0] == 'r':
             red+=1
             color = 0
